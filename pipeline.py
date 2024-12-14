@@ -47,6 +47,11 @@ so our local project can stay clean.
 
 Can we make this work with marimo notebooks?
 
+Can we schedule these pipeline runs in the cloud?
+GitHub Actions is an option.
+That could enable event-driven workflows, e.g., run the pipeline
+and push on all pushes to main.
+
 """
 
 from typing import Annotated
