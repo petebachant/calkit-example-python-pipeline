@@ -56,23 +56,29 @@ and push on all pushes to main.
 
 from typing import Annotated
 
+import pandas as pd
 import plotly.graph_objects as go
-from calkit.decorators import stage
-from calkit.pipeline import Dataset, Dependency, Figure, Output, stage
+from calkit.pipeline import Dataset, Dependency, Figure, Output, Pipeline
+
+pipeline = Pipeline(deps=[Dependency(path="environment.yml")])
 
 
-@stage
-def collect_data() -> Annotated[
+@pipeline.stage
+def collect_data(size: int = 10) -> Annotated[
     pd.DataFrame,
     Dataset(path="data/something.parquet", title="The data"),
 ]:
-    return pd.DataFrame(range(5))
+    return pd.DataFrame(range(size))
 
 
-@stage
+@pipeline.stage
 def plot_data(
     data: Annotated[pd.DataFrame, Dataset(path="data/something.parquet")]
 ) -> Annotated[
     go.Figure, Figure(path="figures/plot.json", title="The figure")
 ]:
     return data.plot(backend="plotly")
+
+
+if __name__ == "__main__":
+    pipeline.run()
