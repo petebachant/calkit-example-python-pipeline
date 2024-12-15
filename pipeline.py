@@ -62,18 +62,26 @@ from calkit.pipeline import Dataset, Dependency, Figure, Output, Pipeline
 
 pipeline = Pipeline(deps=[Dependency(path="environment.yml")])
 
+my_list = list(range(5))
 
-@pipeline.stage
+
+def helper_func():
+    pass
+
+
+@pipeline.stage(other_arg=55)
 def collect_data(size: int = 10) -> Annotated[
     pd.DataFrame,
     Dataset(path="data/something.parquet", title="The data"),
 ]:
+    something = helper_func()
+    list2 = my_list
     return pd.DataFrame(range(size))
 
 
 @pipeline.stage
 def plot_data(
-    data: Annotated[pd.DataFrame, Dataset(path="data/something.parquet")]
+    data: Annotated[pd.DataFrame, Dependency(path="data/something.parquet")]
 ) -> Annotated[
     go.Figure, Figure(path="figures/plot.json", title="The figure")
 ]:
